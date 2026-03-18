@@ -31,7 +31,6 @@ public class AuthController {
 
     @GetMapping("/validar")
     public ResponseEntity<?> validarToken(){
-
         return ResponseEntity.ok("Token valido");
     }
 }

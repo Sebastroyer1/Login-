@@ -51,7 +51,7 @@ public class AuthService {
                 refreshToken,
                 String.valueOf(empleado.getId()),
                 empleado.getClave(),
-                empleado.getName(),
+                empleado.getNombre(),
                 role
         );
     }

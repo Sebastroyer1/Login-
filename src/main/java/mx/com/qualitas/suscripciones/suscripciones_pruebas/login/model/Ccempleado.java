@@ -30,10 +30,13 @@ public class Ccempleado {
     private Long id;
 
     @Column(name = "NOMBRECOMPLETO")
-    private String name;
+    private String nombre;
     @Column(name = "CONTRASENA")
-    private String password;
+    private String contrasena;
+    @Column(name = "CLAVE")
     private String clave;
+    @Column(name = "ESACTIVO")
+    private Boolean esactivo;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "CCEMPLEADO_ROL",

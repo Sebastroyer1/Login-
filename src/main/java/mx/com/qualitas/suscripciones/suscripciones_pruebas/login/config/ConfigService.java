@@ -1,12 +1,9 @@
 package mx.com.qualitas.suscripciones.suscripciones_pruebas.login.config;
 
 import lombok.RequiredArgsConstructor;
-import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.handler.SecurityKeyNotFoundException;
+import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.handler.exception.SecurityKeyNotFoundException;
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.repository.CconfigRepository;
 import org.springframework.stereotype.Service;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor

@@ -12,6 +12,6 @@ public class AuthResponse {
     private String jwtRefresh;
     private String uiObfuscated;  // id del empleado
     private String unObfuscated;  // clave del empleado
-    private String name;          // nombre completo
-    private String role;          // rol del empleado
+    private String nombre;          // nombre completo
+    private String roles;          // rol del empleado
 }
