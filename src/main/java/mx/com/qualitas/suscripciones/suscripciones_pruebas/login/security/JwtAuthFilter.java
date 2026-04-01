@@ -11,6 +11,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,14 +43,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 // Valida y extrae claims
                 Claims claims = tokenProvider.validateToken(token);
                 String username = claims.getSubject();
-                String role = claims.get("role", String.class);
+                List<String> roles = claims.get("roles", List.class);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // Armamos el UserDetails desde el token, sin consultar la BD
+                    List<SimpleGrantedAuthority> authorities = roles == null
+                            ? Collections.emptyList()
+                            : roles.stream()
+                                .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
+                                .collect(Collectors.toList());
+
                     UserDetails userDetails = User.builder()
                             .username(username)
                             .password("")
-                            .authorities(new SimpleGrantedAuthority("ROLE_" + role))
+                            .authorities(authorities)
                             .build();
 
                     UsernamePasswordAuthenticationToken auth =

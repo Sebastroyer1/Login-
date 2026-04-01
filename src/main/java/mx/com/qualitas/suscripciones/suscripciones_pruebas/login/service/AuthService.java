@@ -13,6 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -31,15 +34,14 @@ public class AuthService {
         );
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        // 2. Obtener rol desde las authorities
-        String role = userDetails.getAuthorities().stream()
-                .findFirst()
+        // 2. Obtener roles desde las authorities
+        List<String> roles = userDetails.getAuthorities().stream()
                 .map(auth -> auth.getAuthority().replace("ROLE_", ""))
-                .orElse("Sin rol");
+                .collect(Collectors.toList());
 
         // 3. Crear tokens
-        String accessToken = tokenProvider.createAccessToken(userDetails.getUsername(), role);
-        String refreshToken = tokenProvider.createRefreshToken(userDetails.getUsername(), role);
+        String accessToken = tokenProvider.createAccessToken(userDetails.getUsername(), roles);
+        String refreshToken = tokenProvider.createRefreshToken(userDetails.getUsername(), roles);
 
         // 4. Buscar datos del empleado para la respuesta
         Ccempleado empleado = ccempleadoRepository.findByClave(userDetails.getUsername())
@@ -52,7 +54,7 @@ public class AuthService {
                 String.valueOf(empleado.getId()),
                 empleado.getClave(),
                 empleado.getNombre(),
-                role
+                roles
         );
     }
 

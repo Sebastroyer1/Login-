@@ -42,10 +42,9 @@ public class MyUserDetailsService implements UserDetailsService {
         Ccempleado empleado = ccempleadoRepository.findByClave(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
 
-        String role = userDetails.getAuthorities().stream()
-                .findFirst()
+        List<String> roles = userDetails.getAuthorities().stream()
                 .map(auth -> auth.getAuthority().replace("ROLE_", ""))
-                .orElse("Sin rol");
+                .collect(Collectors.toList());
 
         return new AuthResponse(
                 jwt,
@@ -53,7 +52,7 @@ public class MyUserDetailsService implements UserDetailsService {
                 String.valueOf(empleado.getId()),
                 empleado.getClave(),
                 empleado.getNombre(),
-                role
+                roles
         );
     }
 }

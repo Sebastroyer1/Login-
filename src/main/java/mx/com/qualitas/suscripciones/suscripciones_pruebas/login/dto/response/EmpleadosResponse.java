@@ -1,15 +1,25 @@
 package mx.com.qualitas.suscripciones.suscripciones_pruebas.login.dto.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.service.impl.HtmlEscapeSerializer;
 
-@Getter @Setter
-public class CustomException {
+import java.util.List;
+
+@Data
+public class EmpleadosResponse {
+
+    private Long id;
 
     @JsonSerialize(using = HtmlEscapeSerializer.class)
-    private String code;
+    private String nombre;
+
     @JsonSerialize(using = HtmlEscapeSerializer.class)
-    private String message;
+    private String clave;
+
+    private Boolean esactivo;
+
+    @JsonSerialize(contentUsing = HtmlEscapeSerializer.class)
+    private List<String> roles;
+
 }

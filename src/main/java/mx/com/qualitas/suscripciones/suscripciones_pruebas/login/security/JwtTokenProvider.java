@@ -16,16 +16,17 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
     private final ConfigService configService;
-
-    @Value("${jwt.access-token-validity-ms:2700000}")   // 45 minutos
-    private long accessTokenValidity;
-    @Value("${jwt.refresh-token-validity-ms:7200000}")  // 2 horas
+                                                        //                Milisegundos     segundos     minutos
+    @Value("${jwt.access-token-validity-ms:2700000}")   // 45 minutos        1000      *      60       *   45
+    private long accessTokenValidity;                   //                Milisegundos     segundos     minutos      horas
+    @Value("${jwt.refresh-token-validity-ms:7200000}")  // 2 horas           1000      *      60       *   60    *      2
     private long refreshTokenValidity;
 
     private Key key;
@@ -39,20 +40,20 @@ public class JwtTokenProvider {
     }
 
     // --- CREACIÓN DE TOKENS ---
-    public String createAccessToken(String username, String role) {
-        return createToken(username, role, accessTokenValidity, null);
+    public String createAccessToken(String username, List<String> roles) {
+        return createToken(username, roles, accessTokenValidity, null);
     }
-    public String createRefreshToken(String username, String role) {
-        return createToken(username, role, refreshTokenValidity, "refresh");
+    public String createRefreshToken(String username, List<String> roles) {
+        return createToken(username, roles, refreshTokenValidity, "refresh");
     }
 
-    private String createToken(String username, String role, long validity, String type) {
+    private String createToken(String username, List<String> roles, long validity, String type) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + validity);
 
         JwtBuilder builder = Jwts.builder()
                 .setSubject(username)
-                .claim("role", role)
+                .claim("roles", roles)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(key, SignatureAlgorithm.HS512);
