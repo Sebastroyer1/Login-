@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,8 +23,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Ccempleado empleado = ccempleadoRepository.findByClave(username)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "Usuario no encontrado: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
         // Roles desde la BD
         List<GrantedAuthority> authorities = empleado.getRoles().stream()
@@ -40,7 +38,7 @@ public class MyUserDetailsService implements UserDetailsService {
     }
     public AuthResponse complementResponse(UserDetails userDetails, String jwt, String jwtRefresh) {
         Ccempleado empleado = ccempleadoRepository.findByClave(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException("Empleado no encontrado"));
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(auth -> auth.getAuthority().replace("ROLE_", ""))

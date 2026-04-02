@@ -3,16 +3,17 @@ package mx.com.qualitas.suscripciones.suscripciones_pruebas.login.service;
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.dto.request.CrearEmpleadoRequest;
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.dto.response.EmpleadosResponse;
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.model.Ccempleado;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 
 public interface EmpleadoService {
 
-    List<EmpleadosResponse> obtenerEmpleados();
+    Page<EmpleadosResponse> obtenerEmpleadosActivos(Pageable pageable,String nombre);
+    Page<EmpleadosResponse> obtenerEmpleados(Pageable pageable,String nombre);
 
     Optional<EmpleadosResponse> buscarEmpleado(String clave);
 

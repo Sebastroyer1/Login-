@@ -3,6 +3,7 @@ package mx.com.qualitas.suscripciones.suscripciones_pruebas.login.service;
 import lombok.RequiredArgsConstructor;
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.dto.request.AuthRequest;
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.dto.response.AuthResponse;
+import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.handler.exception.UserNotFoundException;
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.model.Ccempleado;
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.repository.CcempleadoRepository;
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.security.JwtTokenProvider;
@@ -44,8 +45,8 @@ public class AuthService {
         String refreshToken = tokenProvider.createRefreshToken(userDetails.getUsername(), roles);
 
         // 4. Buscar datos del empleado para la respuesta
-        Ccempleado empleado = ccempleadoRepository.findByClave(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Empleado no encontrado"));
+        Ccempleado empleado = ccempleadoRepository.findByClaveAndEsactivoTrue(userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("Empleado no encontrado"));
 
         // 5. Armar respuesta
         return new AuthResponse(

@@ -15,6 +15,7 @@ public class ConfigService {
     /**
      * Retorna la clave de seguridad desde caché o BD.
      * el caché no se invalida automáticamente; se requiere reinicio para reflejar cambios en BD.
+     * No entiendó del bien como funciona lo del caché pero funciona xd.
      */
     public String getSecurityKey() {
         if (cachedSecurityKey == null) {

@@ -19,6 +19,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // Orígenes específicos desde configuración
+        // probablemente se cambie xd
         for (String origin : allowedOrigins) {
             config.addAllowedOrigin(origin);
         }

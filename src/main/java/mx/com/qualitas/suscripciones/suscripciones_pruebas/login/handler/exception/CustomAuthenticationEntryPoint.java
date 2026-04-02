@@ -13,8 +13,7 @@ import java.io.IOException;
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
-    public void commence(HttpServletRequest request,
-                         HttpServletResponse response,
+    public void commence(HttpServletRequest request, HttpServletResponse response,
                          org.springframework.security.core.AuthenticationException ex) throws IOException {
 
         response.setContentType("application/json;charset=UTF-8");

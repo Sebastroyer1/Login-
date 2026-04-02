@@ -84,7 +84,7 @@ public class GlobalException {
         CustomException error = new CustomException();
         error.setCode("USER_NOT_FOUND");
         error.setMessage(ex.getMessage());
-        logger.error("----> Usuario no encontrado: {}", ex.getMessage());
+        logger.error("----> Empleado no encontrado: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 

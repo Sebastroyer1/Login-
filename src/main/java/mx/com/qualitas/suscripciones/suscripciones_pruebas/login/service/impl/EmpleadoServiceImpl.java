@@ -13,6 +13,8 @@ import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.repository.Ccro
 import mx.com.qualitas.suscripciones.suscripciones_pruebas.login.service.EmpleadoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,25 +31,30 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     private final CcrolRepository ccrolRepository;
 
     @Override
-    public List<EmpleadosResponse> obtenerEmpleados() {
-
-        List<Ccempleado> empleados = ccempleadoRepository.findAllByEsactivoTrue();
-        if (empleados.isEmpty()) {
-            return Collections.emptyList();
+    public Page<EmpleadosResponse> obtenerEmpleadosActivos(Pageable pageable,String nombre) {
+        if(nombre != null && !nombre.isEmpty()){
+            logger.info("----> Buscando empleados activos por nombre: {}",nombre);
+            return ccempleadoRepository.findAllByEsactivoTrueAndNombreContainingIgnoreCase(pageable,nombre).map(this::mapToResponse);
         }
-        return empleados.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+        return ccempleadoRepository.findAllByEsactivoTrue(pageable).map(this::mapToResponse);
+    }
+
+    @Override
+    public Page<EmpleadosResponse> obtenerEmpleados(Pageable pageable, String nombre) {
+        if(nombre != null && !nombre.isEmpty()){
+            logger.info("----> Buscando empleados por nombre: {}",nombre);
+            return ccempleadoRepository.findAllByNombreContainingIgnoreCase(pageable,nombre).map(this::mapToResponse);
+        }
+        return ccempleadoRepository.findAll(pageable).map(this::mapToResponse);
     }
 
     @Override
     public Optional<EmpleadosResponse> buscarEmpleado(String clave) {
 
         if (!ccempleadoRepository.existsByClave(clave)) {
-            throw new UserNotFoundException("Usuario no encontrado: " + clave);
+            throw new UserNotFoundException("Empleado no encontrado: " + clave);
         } else {
             Optional<Ccempleado> empleado = ccempleadoRepository.findByClave(clave);
-
             return empleado.map(this::mapToResponse);
         }
     }
@@ -80,7 +87,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
     @Override
     public Ccempleado actualizarEmpleado(Long id, CrearEmpleadoRequest empleado) {
-        Ccempleado empleadoActualizado = ccempleadoRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado: " + id));
+        Ccempleado empleadoActualizado = ccempleadoRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Empleado no encontrado: " + id));
 
         empleadoActualizado.setNombre(empleado.getNombreCompleto());
         empleadoActualizado.setClave(empleado.getUnObfuscated());
@@ -93,7 +100,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
     @Override
     public void eliminarEmpleado(Long id) {
-        Ccempleado empleadoActualizado = ccempleadoRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado: " + id));
+        Ccempleado empleadoActualizado = ccempleadoRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Empleado no encontrado: " + id));
         empleadoActualizado.setEsactivo(false);
         ccempleadoRepository.save(empleadoActualizado);
         logger.info("----> Empleado eliminado (estado: false) ");

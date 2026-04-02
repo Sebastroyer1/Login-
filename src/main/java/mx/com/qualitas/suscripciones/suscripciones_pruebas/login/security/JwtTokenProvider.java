@@ -34,12 +34,12 @@ public class JwtTokenProvider {
     @PostConstruct
     public void init() {
         String secretBase64 = configService.getSecurityKey();
-        // El String viene en Base64
+        // viene en Base64
         byte[] keyBytes = Decoders.BASE64.decode(secretBase64);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // --- CREACIÓN DE TOKENS ---
+    // ------------------------- CREACION DE TOKENS -------------------------
     public String createAccessToken(String username, List<String> roles) {
         return createToken(username, roles, accessTokenValidity, null);
     }
@@ -73,7 +73,7 @@ public class JwtTokenProvider {
                     .getBody();
         } catch (ExpiredJwtException ex) {
             throw new ExpiredTokenException("El token ha expirado");
-        } catch (Exception ex) {
+        } catch (InvalidTokenException ex) {
             throw new InvalidTokenException("Token inválido");
         }
     }
